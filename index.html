@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
     <style>
+      html 
       body {
         background-color: #050505;
         margin: 0;
@@ -33,11 +34,131 @@
       }
 
       .navbar {
+        background-color: #050505;
         width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 50px;
+      }
+
+      .menu-btn {
+        background-color: #2b2d31;
+        color: #FF7B00;
+        border: 2px solid #FF7B00;
+        padding: 10px;
+        font-size: 20px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+      }
+
+      .side-panel {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 260px;
+        height: 100%;
+        background: rgba(10,10,10,0.96);
+        backdrop-filter: blur(14px);
+        border-right: 2px solid #FF7B00;
+        z-index: 5000;
+        transition: left 0.35s ease;
+        padding: 25px 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .side-panel.active {
+        left: 0;
+      }
+
+      .side-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+      }
+
+      .side-panel-title {
+        display: flex;
+        align-items: center;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .side-panel-title .logo-tech {
+        color: #ffffff;
+      }
+
+      .side-panel-title .logo-hub {
+        background-color: #FF7B00;
+        color: #050505;
+        margin-left: 5px;
+        padding: 2px 12px;
+        border-radius: 20px;
+      }
+
+      .close-panel-btn {
+        background: none;
+        border: none;
+        color: #aaa;
+        font-size: 22px;
+        cursor: pointer;
+      }
+
+      .close-panel-btn:hover { 
+        color: #FF7B00;
+      }
+
+      .panel-links {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .panel-link {
+        background: #1a1a1a;
+        border: 2px solid #FF7B00;
+        color: #fff;
+        padding: 14px 18px;
+        border-radius: 18px;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: 0.25s ease;
+      }
+
+      .panel-link:hover {
+        transform: translateX(6px);
+        background: #242424;
+      }
+
+      .panel-link i {
+        color: #FF7B00;
+        width: 20px;
+      }
+
+      .side-panel-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        backdrop-filter: blur(4px);
+        z-index: 4000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      .side-panel-overlay.active {
+        opacity: 1;
+        pointer-events: all;
       }
 
       .home-btn {
@@ -254,7 +375,7 @@
 
       .icon {
         font-size: 30px;
-        color: white;
+        color: #FF7B00;
         cursor: pointer;
         transition: 0.25s;
         display: flex;
@@ -274,7 +395,6 @@
       }
 
       .footer-quote {
-        border-bottom: 3px solid #FF7B00;
         border-radius: 24px;
         padding: 15px;
         color: #ffffff;
@@ -289,6 +409,8 @@
         margin: 0 auto 4px;
       }
 
+      /* ─── AUTH MODAL ─────────────────────────────────── */
+
       .modal-overlay {
         display: none;
         position: fixed;
@@ -297,72 +419,199 @@
         width: 100%;
         height: 100%;
         background: #000000b3;
-        backdrop-filter: blur(4px);
-        z-index: 1000;
+        backdrop-filter: blur(6px);
+        z-index: 2000;
         justify-content: center;
         align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
 
-      .modal-content {
-        background: #2b2d31;
-        border: 1px solid #FF7B00;
-        padding: 20px;
-        border-radius: 12px;
-        width: 320px;
-        text-align: center;
-        box-shadow: 0 10px 30px #00000080;
-        color: white;
+      .modal-overlay.active {
+        opacity: 1;
       }
 
-      .modal-header {
-        text-align: left;
-        margin-bottom: 15px;
-      }
-
-      .dot {
-        height: 8px;
-        width: 8px;
-        background: #707070;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 4px;
-      }
-
-      .modal-btn {
-        margin-top: 20px;
-        border: 2px solid #ff7B00;
-        background: #2b2d31;
-        padding: 8px 30px;
+      .auth-modal {
+        background: #1a1a1a;
+        border: 2px solid #FF7B00;
         border-radius: 24px;
-        color: #f8f9fa;
-        cursor: pointer;
-        transition: 0.3s;
+        width: 340px;
+        padding: 30px 25px;
+        box-shadow: 0 0 40px rgba(255, 123, 0, 0.2);
+        transform: translateY(40px) scale(0.95);
+        transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        opacity: 0;
+        position: relative;
       }
 
-      .modal-btn:hover {
-        transform: scale(1.05);
-        transition: 0.3s ease;
-        filter: brightness(1.2);
+      .modal-overlay.active .auth-modal {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 18px;
+        background: none;
+        border: none;
+        color: #aaa;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        transition: color 0.2s;
+        filter: none;
+        transform: none;
+      }
+
+      .modal-close-btn:hover {
+        color: #FF7B00;
+        transform: none;
+        filter: none;
+      }
+
+      /* Modal logo */
+      .modal-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+
+      .modal-logo .logo-tech {
+        color: #fff;
+        font-size: 36px;
+      }
+
+      .modal-logo .logo-hub {
+        background-color: #FF7B00;
+        color: #050505;
+        font-size: 36px;
+        margin-left: 4px;
+        padding: 1px 10px;
+        border-radius: 20px;
+      }
+
+      /* Tab switcher */
+      .modal-tabs {
+        display: flex;
+        background: #2b2d31;
+        border-radius: 24px;
+        padding: 4px;
+        margin-bottom: 24px;
+        border: 2px solid #FF7B00;
+      }
+
+      .tab-btn {
+        flex: 1;
+        padding: 9px;
+        border: none;
+        border-radius: 20px;
+        background: transparent;
+        color: #aaa;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.3s ease, color 0.3s ease;
+        transform: none;
+        filter: none;
+      }
+
+      .tab-btn:hover {
+        transform: none;
+        filter: none;
+        color: #fff;
+      }
+
+      .tab-btn.active {
+        background: #FF7B00;
+        color: #050505;
+        font-weight: bold;
+      }
+
+      /* Forms */
+      .auth-form {
+        display: none;
+        flex-direction: column;
+        gap: 12px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      .auth-form.form-visible {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .auth-form.form-hiding {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      .auth-form input {
+        width: 100%;
+        padding: 11px 16px;
+        border: 2px solid #FF7B00;
+        border-radius: 24px;
+        background: #2b2d31;
+        color: #fff;
+        font-size: 14px;
+        outline: none;
+        box-sizing: border-box;
+      }
+
+      .auth-form input::placeholder {
+        color: #777;
+      }
+
+      .auth-form input:focus {
+        border-color: #ffA040;
+        box-shadow: 0 0 0 3px rgba(255, 123, 0, 0.15);
+      }
+
+      .auth-submit-btn {
+        width: 100%;
+        padding: 12px;
+        background: #FF7B00;
+        color: #050505;
+        border: none;
+        border-radius: 24px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 4px;
+        transition: filter 0.2s, transform 0.2s;
+      }
+
+      .auth-submit-btn:hover {
+        filter: brightness(1.15);
+        transform: scale(1.02);
+      }
+
+      .form-footer-text {
+        text-align: center;
+        color: #777;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .form-footer-text span {
+        color: #FF7B00;
+        cursor: pointer;
+        text-decoration: underline;
       }
     </style>
   </head>
   <body>
     <div class="navbar">
-      <a href="https://techhub.harvic005.workers.dev/">
-        <button class="home-btn">
-          <i class="fa-solid fa-house"></i>
-        </button>
-      </a>
-      <div class="auth-buttons">
-        <a href="src/templates/About Me.html" target="_blank" class="auth-link">
-          <button class="auth-btn user">
-            <i class="fa-solid fa-user user-icon"></i>
-          </button>
-        </a>
-        <button class="auth-btn" onclick="showAlert()">Login</button>
-        <button class="auth-btn" onclick="showAlert()">Signup</button>
-      </div>
-    </div>
+  <button class="menu-btn" onclick="openSidePanel()">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+</div>
     <div class="logo-container">
       <span class="logo-tech">Tech</span>
       <span class="logo-hub">Hub</span>
@@ -389,6 +638,46 @@
     <div id="noResults">No tech matches found. Try searching for "Game" or "Hardware"!</div>
     <div class="content-grid" id="contentGrid">
       <div class="content-card">
+        <img src="src/templates/images/console_wars/1.png" alt="Web Tools" class="content-media">
+        <div class="card-body">
+          <h3>The Console Wars 2026.</h3>
+          <p class="card-desc">Three consoles dominate the living room in 2026. Each one represents a fundamentally different philosophy about what gaming is and who it is for.<strong>
+              <a href="src/templates/console_wars.html" class="card-link">Learn more</a>
+            </strong>
+          </p>
+        </div>
+      </div>
+      <div class="content-card">
+        <img src="src/templates/images/switch_2/1.png" alt="Web Tools" class="content-media">
+        <div class="card-body">
+          <h3>Nintendo Switch 2.</h3>
+          <p class="card-desc">It has been a year and the Nintendo Switch 2 is still standing.<strong>
+              <a href="src/templates/switch_2.html" class="card-link">Learn more</a>
+            </strong>
+          </p>
+        </div>
+      </div>
+      <div class="content-card">
+        <img src="src/templates/images/framework/1.png" alt="Web Tools" class="content-media">
+        <div class="card-body">
+          <h3>Framework Laptop.</h3>
+          <p class="card-desc">Framework exists to challenge a premise that the laptop industry spent twenty years making feel inevitable.<strong>
+              <a href="src/templates/framework.html" class="card-link">Learn more</a>
+            </strong>
+          </p>
+        </div>
+      </div>
+      <div class="content-card">
+        <img src="src/templates/images/mac_m5/1.png" alt="OS" class="content-media">
+        <div class="card-body">
+          <h3>MacBook Pro M5 Review.</h3>
+          <p class="card-desc">Apple's MacBook Pro M5 is a powerful laptop that is perfect for productivity and creativity. <strong>
+              <a href="src/templates/macbook_m5.html" class="card-link">Learn more</a>
+            </strong>
+          </p>
+        </div>
+      </div>
+      <div class="content-card">
         <img src="src/templates/images/xbox/1.png" alt="Web Tools" class="content-media">
         <div class="card-body">
           <h3>Xbox's New Era.</h3>
@@ -399,7 +688,7 @@
         </div>
       </div>
       <div class="content-card">
-        <img src="src/images/Macbook_neo/2.jpeg" alt="Web Tools" class="content-media">
+        <img src="src/templates/images/Macbook_neo/2.png" alt="Web Tools" class="content-media">
         <div class="card-body">
           <h3>Macbook neo, the new budget baller.</h3>
           <p class="card-desc">How can this budget macbook perform in the real world, thets dive in. <strong>
@@ -409,11 +698,61 @@
         </div>
       </div>
       <div class="content-card">
-        <img src="src/images/Samsung_Dex/3.jpeg" alt="Game Dev" class="content-media">
+        <img src="src/templates/images/death_of_smartphones/1.png" alt="OS" class="content-media">
+        <div class="card-body">
+          <h3>The Death of the Smartphone.</h3>
+          <p class="card-desc">The smartphone is dead. Long live the smartphone. <strong>
+              <a href="src/templates/The_Death_of_the_Smartphone.html" class="card-link">Learn more</a>
+            </strong>
+          </p>
+        </div>
+      </div>
+      <div class="content-card">
+        <img src="src/templates/images/private_browser/1.png" alt="Game Dev" class="content-media">
+        <div class="card-body">
+          <h3>What Is the Best Browser for Security and Privacy.</h3>
+          <p class="card-desc">Shielding Your Digital Self: What is the Best Browser for Security and Privacy? <strong>
+              <a href="src/templates/private_browser.html" class="card-link">Learn more</a>
+            </strong>
+          </p>
+        </div>
+      </div>
+      <div class="content-card">
+        <img src="src/templates/images/Samsung_Dex/1.png" alt="Game Dev" class="content-media">
         <div class="card-body">
           <h3>Samsung Dex.</h3>
           <p class="card-desc">Unleashing Your Phone's Potential: A Deep Dive into Samsung Dex. <strong>
               <a href="src/templates/Samsung_Dex.html" class="card-link">Learn more</a>
+            </strong>
+          </p>
+        </div>
+      </div>
+      <div class="content-card">
+        <img src="src/templates/images/cybersecurity/1.png" alt="OS" class="content-media">
+        <div class="card-body">
+          <h3>AI Is Hacking Back.</h3>
+          <p class="card-desc">Cybersecurity has always been an arms race. Attackers find a technique, defenders build a countermeasure, attackers adapt. <strong>
+              <a href="src/templates/cybersecurity.html" class="card-link">Learn more</a>
+            </strong>
+          </p>
+        </div>
+      </div>
+      <div class="content-card">
+        <img src="src/templates/images/quantum/1.jpg" alt="OS" class="content-media">
+        <div class="card-body">
+          <h3>Quantum Goes Practical.</h3>
+          <p class="card-desc">For decades, quantum computing existed in two places: the physics department and the hype cycle. Researchers promised machines that. <strong>
+              <a href="src/templates/quantum.html" class="card-link">Learn more</a>
+            </strong>
+          </p>
+        </div>
+      </div>
+      <div class="content-card">
+        <img src="src/images/Couple_gaming/1.jpg" alt="OS" class="content-media">
+        <div class="card-body">
+          <h3>Why gamers make excellent revelation partners.</h3>
+          <p class="card-desc">Level up your love life. Why Psychologists say gamersmake great relationship partners. <strong>
+              <a href="src/templates/Gaming_&_relationships.html" class="card-link">Learn more</a>
             </strong>
           </p>
         </div>
@@ -448,16 +787,7 @@
           </p>
         </div>
       </div>
-      <div class="content-card">
-        <img src="src/images/Couple_gaming/1.jpg" alt="OS" class="content-media">
-        <div class="card-body">
-          <h3>Why gamers make excellent revelation partners.</h3>
-          <p class="card-desc">Level up your love life. Why Psychologists say gamersmake great relationship partners. <strong>
-              <a href="src/templates/Gaming_&_relationships.html" class="card-link">Learn more</a>
-            </strong>
-          </p>
-        </div>
-      </div>
+      
       <div class="content-card">
         <img src="src/templates/images/agentic_ai/1.png" alt="OS" class="content-media">
         <div class="card-body">
@@ -468,26 +798,7 @@
           </p>
         </div>
       </div>
-      <div class="content-card">
-        <img src="src/templates/images/death_of_smartphones/1.png" alt="OS" class="content-media">
-        <div class="card-body">
-          <h3>The Death of the Smartphone.</h3>
-          <p class="card-desc">The smartphone is dead. Long live the smartphone. <strong>
-              <a href="src/templates/The_death_of_smartphone.html" class="card-link">Learn more</a>
-            </strong>
-          </p>
-        </div>
-      </div>
-      <div class="content-card">
-        <img src="src/templates/images/quantum/1.jpg" alt="OS" class="content-media">
-        <div class="card-body">
-          <h3>Quantum Goes Practical.</h3>
-          <p class="card-desc">For decades, quantum computing existed in two places: the physics department and the hype cycle. Researchers promised machines that. <strong>
-              <a href="src/templates/quantum.html" class="card-link">Learn more</a>
-            </strong>
-          </p>
-        </div>
-      </div>
+      
       <div class="content-card">
         <img src="src/templates/images/opensource_ai/1.png" alt="OS" class="content-media">
         <div class="card-body">
@@ -498,16 +809,7 @@
           </p>
         </div>
       </div>
-      <div class="content-card">
-        <img src="src/templates/images/cybersecurity/1.png" alt="OS" class="content-media">
-        <div class="card-body">
-          <h3>AI Is Hacking Back.</h3>
-          <p class="card-desc">Cybersecurity has always been an arms race. Attackers find a technique, defenders build a countermeasure, attackers adapt. <strong>
-              <a href="src/templates/cybersecurity.html" class="card-link">Learn more</a>
-            </strong>
-          </p>
-        </div>
-      </div>
+      
       <div class="content-card">
         <img src="src/templates/images/ev_batteries/1.webp" alt="OS" class="content-media">
         <div class="card-body">
@@ -529,16 +831,6 @@
         </div>
       </div>
       <div class="content-card">
-        <img src="src/templates/images/mac_m5/1.jpg" alt="OS" class="content-media">
-        <div class="card-body">
-          <h3>MacBook Pro M5 Review.</h3>
-          <p class="card-desc">Apple's MacBook Pro M5 is a powerful laptop that is perfect for productivity and creativity. <strong>
-              <a href="src/templates/macbook_m5.html" class="card-link">Learn more</a>
-            </strong>
-          </p>
-        </div>
-      </div>
-      <div class="content-card">
         <img src="src/templates/images/dell_xps/1.jpg" alt="OS" class="content-media">
         <div class="card-body">
           <h3>Dell XPS 14 & 16 Review.</h3>
@@ -548,12 +840,6 @@
           </p>
         </div>
       </div>
-    </div>
-    <div class="section-title">
-      <strong>Today's spotlight.</strong>
-    </div>
-    <div id="noResults">No tech matches found. Try searching for "Game" or "Hardware"!</div>
-    <div class="content-grid" id="contentGrid">
       <div class="content-card">
         <img src="src/images/Software & OS Customization.png" alt="OS" class="content-media">
         <div class="card-body">
@@ -594,12 +880,11 @@
           </p>
         </div>
       </div>
-    </div>
-    </div>
+    </div>      
+
     <div class="section-title">
       <strong>Featured videos.</strong>
     </div>
-    <div id="noResults">No tech matches found. Try searching for "Game" or "Hardware"!</div>
     <div class="content-grid">
       <div class="content-card">
         <iframe class="content-media" src="https://www.youtube.com/embed/I6rJ5aQJqQA?si=8bGJm1GxSyfNpEow" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -609,42 +894,37 @@
         </div>
       </div>
       <div class="content-card">
-        <video controls preload="auto" poster="src\images\TechHub_logo.png" class="content-media">
-          <source src="src/videos/TechHub_intro.mp4" type="video/mp4">
-        </video>
+        <iframe class="content-media" src="https://www.youtube.com/embed/-jYWgrKI-u0?si=9g0J40WqWRr3LbkH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         <div class="card-body">
-          <h3>Welcome to TechHub</h3>
+          <h3>Theme Installation in Termux | Full Setup Guide</h3>
           <p class="card-desc">850K Views</p>
         </div>
       </div>
       <div class="content-card">
-        <video controls preload="auto" poster="src\images\TechHub_logo.png" class="content-media">
-          <source src="src/videos/TechHub_intro.mp4" type="video/mp4">
-        </video>
+        <iframe class="content-media" src="https://www.youtube.com/embed/n8eyJveThu4?si=1z51czesnGCwTORD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         <div class="card-body">
-          <h3>Welcome to TechHub</h3>
+          <h3>First time live streaming and trying to play blood strike on a PC.</h3>
           <p class="card-desc">1.2M Views</p>
         </div>
       </div>
       <div class="content-card">
-        <video controls preload="auto" poster="src\images\TechHub_logo.png" class="content-media">
-          <source src="src/videos/TechHub_intro.mp4" type="video/mp4">
-        </video>
+        <iframe class="content-media" src="https://www.youtube.com/embed/9XLXsMSDXhc?si=ecKJBY6u22Q2lu9F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         <div class="card-body">
-          <h3>Welcome to TechHub</h3>
+          <h3>Brothers in arms 3 gameplay clip.</h3>
           <p class="card-desc">1.2M Views</p>
         </div>
       </div>
     </div>
+
     <div class="footer-container">
       <div class="social-icons">
         <div class="icon">
-          <a href="https://www.instagram.com/_h.a.r.v.i.c_/" target="_blank" class="social-link">
+          <a href="https://www.instagram.com/harvic.dev/" target="_blank" class="social-link">
             <i class='fab fa-instagram'></i>
           </a>
         </div>
         <div class="icon">
-          <a href="https://www.threads.net/@_h.a.r.v.i.c_" target="_blank" class="social-link">
+          <a href="https://www.threads.net/@harvic.dev" target="_blank" class="social-link">
             <i class='fab fa-threads'></i>
           </a>
         </div>
@@ -662,26 +942,172 @@
       <div class="footer-quote"> Remember! Coding is poetry written in pure logic. </div>
       <div class="footer-end"> All rights reserved @HexTech 2026 </div>
     </div>
-    <div id="customAlert" class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
+
+    <!-- ─── AUTH MODAL ─────────────────────────────────── -->
+    <div id="authModal" class="modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="auth-modal">
+        <button class="modal-close-btn" onclick="closeAuthModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="modal-logo">
+          <span class="logo-tech">Tech</span>
+          <span class="logo-hub">Hub</span>
         </div>
-        <p id="modalMessage">Service not available at the moment.</p>
-        <button onclick="closeModal()" class="modal-btn">OK</button>
+
+        <div class="modal-tabs">
+          <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">Login</button>
+          <button class="tab-btn" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form" action="/login" method="POST">
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button type="submit" class="auth-submit-btn">Login</button>
+          <p class="form-footer-text">Don't have an account? <span onclick="switchTab('signup')">Sign Up</span></p>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="signupForm" class="auth-form" action="/signup" method="POST">
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button type="submit" class="auth-submit-btn">Create Account</button>
+          <p class="form-footer-text">Already have an account? <span onclick="switchTab('login')">Login</span></p>
+        </form>
       </div>
     </div>
+
+    <div id="sideOverlay" class="side-panel-overlay" onclick="closeSidePanel()"></div>
+
+<div id="sideOverlay" class="side-panel-overlay" onclick="closeSidePanel()"></div>
+
+<div id="sidePanel" class="side-panel">
+  <div class="side-panel-header">
+    <div class="side-panel-title">
+  <span class="logo-tech">Tech</span>
+  <span class="logo-hub">Hub</span>
+</div>
+
+    <button class="close-panel-btn" onclick="closeSidePanel()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <div class="panel-links">
+    <a href="https://techhub.harvic005.workers.dev/" class="panel-link">
+      <i class="fa-solid fa-house"></i>
+      Home
+    </a>
+
+    <button class="panel-link" onclick="openAuthModal('login'); closeSidePanel();" style="cursor:pointer;">
+      <i class="fa-solid fa-right-to-bracket"></i>
+      Login
+    </button>
+
+    <a href="src/templates/About Me.html" target="_blank" class="panel-link">
+      <i class="fa-solid fa-user"></i>
+      About
+    </a>
+    
+  </div>
+</div>
+
     <script>
-      function showAlert() {
-        document.getElementById('customAlert').style.display = 'flex';
+      // ─── AUTH MODAL ───────────────────────────────────
+      const overlay = document.getElementById('authModal');
+      let currentTab = null;
+
+      function openAuthModal(tab) {
+        overlay.style.display = 'flex';
+        // Force reflow so transition fires
+        overlay.offsetHeight;
+        overlay.classList.add('active');
+        // Show the right form immediately (no prior tab)
+        currentTab = null;
+        showForm(tab, false);
       }
 
-      function closeModal() {
-        document.getElementById('customAlert').style.display = 'none';
+      function closeAuthModal() {
+        overlay.classList.remove('active');
+        setTimeout(() => {
+          overlay.style.display = 'none';
+          // Reset forms
+          document.getElementById('loginForm').classList.remove('form-visible', 'form-hiding');
+          document.getElementById('signupForm').classList.remove('form-visible', 'form-hiding');
+          document.getElementById('loginForm').style.display = 'none';
+          document.getElementById('signupForm').style.display = 'none';
+          currentTab = null;
+        }, 300);
       }
 
+      function handleOverlayClick(e) {
+        if (e.target === overlay) closeAuthModal();
+      }
+
+      function switchTab(tab) {
+        if (tab === currentTab) return;
+        showForm(tab, true);
+      }
+
+      function showForm(tab, animate) {
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const loginTab = document.getElementById('loginTab');
+        const signupTab = document.getElementById('signupTab');
+
+        const toShow = tab === 'login' ? loginForm : signupForm;
+        const toHide = tab === 'login' ? signupForm : loginForm;
+
+        // Update tabs
+        loginTab.classList.toggle('active', tab === 'login');
+        signupTab.classList.toggle('active', tab === 'signup');
+
+        if (animate && currentTab !== null) {
+          // Fade out current
+          toHide.classList.add('form-hiding');
+          setTimeout(() => {
+            toHide.classList.remove('form-visible', 'form-hiding');
+            toHide.style.display = 'none';
+
+            // Fade in new
+            toShow.style.display = 'flex';
+            toShow.offsetHeight; // reflow
+            toShow.classList.add('form-visible');
+          }, 250);
+        } else {
+          // No animation (first open)
+          toHide.classList.remove('form-visible', 'form-hiding');
+          toHide.style.display = 'none';
+          toShow.style.display = 'flex';
+          toShow.offsetHeight;
+          toShow.classList.add('form-visible');
+        }
+
+        currentTab = tab;
+      }
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeAuthModal();
+      });
+
+      // ─── SIDE PANEL ──────────────────────────────────
+const sidePanel = document.getElementById('sidePanel');
+const sideOverlay = document.getElementById('sideOverlay');
+
+function openSidePanel() {
+  sidePanel.classList.add('active');
+  sideOverlay.classList.add('active');
+}
+
+function closeSidePanel() {
+  sidePanel.classList.remove('active');
+  sideOverlay.classList.remove('active');
+}
+
+      // ─── SEARCH ───────────────────────────────────────
       function filterContent() {
         const input = document.getElementById('searchInput');
         const filter = input.value.toLowerCase();
@@ -699,7 +1125,6 @@
             cards[i].style.display = "none";
           }
         }
-        // Show "No Results" message if everything is hidden
         noResults.style.display = (visibleCount === 0) ? "block" : "none";
       }
     </script>
